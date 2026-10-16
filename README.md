@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# СЕВЕР — интернет-магазин одежды
 
-## Getting Started
+Современный магазин городской одежды и аксессуаров: редакционная главная, коллекция товаров, выбор размера, корзина и оформление доставки. Название и контакты СЕВЕР сейчас рабочие — перед публикацией под реальным брендом их нужно заменить.
 
-First, run the development server:
+## Что уже работает
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Адаптивная главная страница с анимированной кампанией и подборкой товаров.
+- Каталог с поиском, категориями и сортировкой.
+- Страницы товаров с выбором размера и добавлением в корзину.
+- Корзина с изменением количества, удалением позиций и сохранением между перезагрузками.
+- Оформление заказа с проверкой формы, выбором курьерской доставки или пункта выдачи.
+- Серверная проверка наличия и цен, сохранение заказа и снимков товаров в PostgreSQL, уменьшение остатка в транзакции.
+- Закрытая панель /admin: просмотр заказов, обновление статусов, управление остатками товаров.
+- Страницы доставки, обмена и возврата, конфиденциальности.
+- Анимации с поддержкой настройки reduced motion в системе.
+- Open Graph для превью, robots.txt и sitemap.xml; корзина и оформление заказа исключены из индексации.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Оплата картой не подключена: заказ оформляется с оплатой при получении. В демонстрационном магазине контактные данные и тексты условий нужно заменить на реальные.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Стек
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Next.js 16 · React 19 · TypeScript 7 · CSS Modules с BEM-именами · Prisma ORM 7 · PostgreSQL · Zod · Biome
 
-## Learn More
+Шрифты хранятся локально. Изображения кампании лежат в public/images и не требуют загрузки с удалённого сервиса при открытии сайта.
 
-To learn more about Next.js, take a look at the following resources:
+## Запуск локально
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Требуются Node.js 22 или новее и npm.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Установить зависимости: npm.cmd ci
+2. Скопировать .env.example в .env.
+3. Указать DATABASE_URL и DIRECT_URL своей PostgreSQL-базы. Первый адрес используется приложением, второй — миграциями Prisma.
+4. Создать таблицы: npm.cmd run db:migrate
+5. Заполнить каталог: npm.cmd run db:seed
+6. Запустить сайт: npm.cmd run dev
 
-## Deploy on Vercel
+Откройте http://localhost:3000. Команды с npm.cmd приведены для Windows PowerShell и cmd. В другой оболочке можно использовать npm.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Для настройки базы можно использовать любой совместимый PostgreSQL-хостинг. У проекта должна быть отдельная база; секреты подключения нельзя добавлять в Git или отправлять в чат. Файл .env.example содержит только пустые примеры.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Панель управления
+
+Создайте случайный секрет окружения командой node -p "require('node:crypto').randomBytes(32).toString('base64url')" и установите его как AUTH_SECRET.
+
+Задайте пароль администратора командой npm.cmd run admin:hash. Ввод скрыт. Скопируйте выведенную строку ADMIN_PASSWORD_HASH в .env и настройки окружения хостинга. Пароль должен быть не короче 12 символов. После настройки и запуска базы откройте /admin. Панель закрыта подписанной HttpOnly-cookie и не индексируется поисковиками.
+
+## Проверки и сборка
+
+- npm.cmd run lint — проверка форматирования и статических правил Biome.
+- npm.cmd run build — production-сборка Next.js и генерация Prisma Client.
+- npm.cmd run start — запуск готовой production-сборки.
+
+## Публикация
+
+Для Vercel подключите репозиторий и задайте DATABASE_URL, DIRECT_URL, NEXT_PUBLIC_SITE_URL, AUTH_SECRET и ADMIN_PASSWORD_HASH в переменных окружения проекта. Сначала примените миграции командой npm.cmd run db:deploy в окружении, где доступны DIRECT_URL и Prisma CLI; затем выполните db:seed один раз для наполнения каталога. Не запускайте seed при каждом деплое, если вручную меняете товары в базе.
+
+В приложении сборка генерирует Prisma Client автоматически. У production-базы должны быть резервные копии и отдельные учётные данные с минимально нужными правами.
+
+## Структура
+
+- src/app — страницы, layout и API магазина и панели управления.
+- src/app/robots.ts и src/app/sitemap.ts — правила обхода и карта публичных страниц.
+- src/components — общие элементы магазина и клиентские компоненты.
+- src/lib — каталог, авторизация панели и подключение Prisma.
+- prisma/schema.prisma — модели товаров и заказов.
+- prisma/migrations — история схемы базы.
+- prisma/seed.ts — начальные товары.
+- public/images — локальные визуальные материалы кампании.
+
+## Портфолио-кейс
+
+СЕВЕР — концептуальный интернет-магазин городской одежды. Проект демонстрирует каталог, состояния корзины, адаптивный интерфейс, серверное оформление заказа с PostgreSQL и панель управления товарами и заказами. В основе — Next.js, TypeScript и Prisma; интерфейс собран из самостоятельных CSS Modules с BEM-именами. Перед публичной презентацией добавьте ссылки на репозиторий и демо, а также собственные скриншоты.

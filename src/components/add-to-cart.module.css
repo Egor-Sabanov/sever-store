@@ -1,0 +1,112 @@
+.addToCart {
+  display: grid;
+  gap: 17px;
+}
+.addToCart__labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+.addToCart__labelRow a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+.addToCart__labelRow a:hover {
+  color: var(--color-cobalt);
+}
+.addToCart__sizes {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.addToCart__legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.addToCart__size {
+  min-width: 48px;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    border 0.2s ease,
+    color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+.addToCart__size:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-ink);
+}
+.addToCart__size[data-selected="true"] {
+  border-color: var(--color-lime);
+  background: var(--color-lime);
+  color: var(--color-action-text);
+}
+.addToCart__button {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0 10px 0 20px;
+  border: 0;
+  border-radius: 3px;
+  background: var(--color-lime);
+  color: var(--color-action-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease,
+    opacity 0.2s ease;
+}
+.addToCart__button:not(:disabled):hover {
+  background: #c8f13f;
+  transform: translateY(-2px);
+}
+.addToCart__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.addToCart__buttonIcon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-night);
+  color: var(--color-lime);
+  transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.addToCart__button:hover:not(:disabled) .addToCart__buttonIcon {
+  transform: rotate(-45deg);
+}
+.addToCart__note {
+  margin: -5px 0 0;
+  color: var(--color-muted);
+  font-size: 12px;
+}
